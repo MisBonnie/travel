@@ -15,7 +15,7 @@
       <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
       <!--导入angularJS文件-->
-    <script src="js/angular.min.js"></script>
+<!--    <script src="js/angular.min.js"></script>-->
 	<!--导入jquery-->
 	<script src="../js/jquery-3.3.1.js"></script>
 	<script>
@@ -27,7 +27,11 @@
 							if (data.flag) {
 								// 登录成功 -> 跳转到首页
 								location.href = 'index.html';
-
+							} else {
+								// 登录失败 data.errorMsg
+								$("#errorMsg").html(data.errorMsg);
+								// 重新加载验证码
+								changeCheckCode($("#checkCodeImg").get(0));
 							}
 						}, "json"
 				);
@@ -54,11 +58,11 @@
 				<!--登录错误提示消息-->
         		<div id="errorMsg" class="alert alert-danger" ></div>
 				<form id="loginForm" action="" method="post" accept-charset="utf-8">
-					<input name="username" type="text" placeholder="请输入账号" autocomplete="off">
-        			<input name="password" type="text" placeholder="请输入密码" autocomplete="off">
+					<input name="username" type="text" placeholder="请输入账号" autocomplete="off"/>
+        			<input name="password" type="password" placeholder="请输入密码" autocomplete="off"/>
         			<div class="verify">
-					<input name="check" type="text" placeholder="请输入验证码" autocomplete="off">
-					<span><img src="/CheckCode" alt="" onclick="changeCheckCode(this)"></span>
+					<input name="check" type="text" placeholder="请输入验证码" autocomplete="off"/>
+					<span><img id="checkCodeImg" src="/CheckCode" alt="" onclick="changeCheckCode(this)"></span>
 					<script type="text/javascript">
 						//图片点击事件
 						function changeCheckCode(img) {
