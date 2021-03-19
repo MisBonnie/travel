@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <context:component-scan base-package="com.zzxx.travel.service"/>
-    <context:property-placeholder location="classpath:druid.properties,classpath:jedis.properties" ignore-unresolvable="true"/>
+    <context:property-placeholder location="classpath:druid.properties,classpath:jedis.properties" ignore-unresolvable="true" />
 
     <bean name="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
         <property name="driverClassName" value="${jdbc.driverClassName}"/>
@@ -35,7 +35,10 @@
            <tx:method name="find*" isolation="READ_COMMITTED" propagation="SUPPORTS" read-only="true"/>
        </tx:attributes>
     </tx:advice>
+
+    <!--shardedJedisPool的相关配置-->
     <bean name="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <!--新版是maxTotal，旧版是maxActive-->
         <property name="maxTotal" value="${redis.maxTotal}"/>
         <property name="maxIdle" value="${redis.maxIdle}"/>
     </bean>
@@ -49,4 +52,5 @@
             </list>
         </constructor-arg>
     </bean>
+
 </beans>
