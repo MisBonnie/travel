@@ -60,7 +60,7 @@ public class UserController {
     @RequestMapping("/logout")
     public String logout(HttpSession session)  {
         session.invalidate();
-        return "redirect:/pages/login.html";
+        return "redirect:/login.html";
     }
 
     // 注册账号
@@ -100,7 +100,7 @@ public class UserController {
         // 返回结果数据 - 页面 - 登录页面
         response.setContentType("text/html;charset=utf-8");
         if (flag) {
-            response.getWriter().write("激活成功, 请<a href='/pages/login.html'>登录</a>");
+            response.getWriter().write("激活成功, 请<a href='/login.html'>登录</a>");
         } else {
             response.getWriter().write("激活失败! 请联系管理员!");
         }

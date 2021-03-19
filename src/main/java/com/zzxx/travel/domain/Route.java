@@ -16,9 +16,9 @@ public class Route implements Serializable {
     private String rdate; // 上架时间
     private String isThemeTour; // 是否主题旅游，必输，0代表不是，1代表是
     private int count; // 收藏数量
-    private int cid; // 所属分类，必输
+//    private int cid; // 所属分类，必输
     private String rimage; // 缩略图
-    private int sid; // 所属商家
+//    private int sid; // 所属商家
     private String sourceId; // 抓取数据的来源id
 
     private Category category; // 所属分类
@@ -56,9 +56,9 @@ public class Route implements Serializable {
         this.rdate = rdate;
         this.isThemeTour = isThemeTour;
         this.count = count;
-        this.cid = cid;
+//        this.cid = cid;
         this.rimage = rimage;
-        this.sid = sid;
+//        this.sid = sid;
         this.sourceId = sourceId;
     }
 
@@ -158,13 +158,13 @@ public class Route implements Serializable {
         this.count = count;
     }
 
-    public int getCid() {
-        return cid;
-    }
-
-    public void setCid(int cid) {
-        this.cid = cid;
-    }
+//    public int getCid() {
+//        return cid;
+//    }
+//
+//    public void setCid(int cid) {
+//        this.cid = cid;
+//    }
 
     public String getRimage() {
         return rimage;
@@ -174,11 +174,11 @@ public class Route implements Serializable {
         this.rimage = rimage;
     }
 
-    public int getSid() {
-        return sid;
-    }
-
-    public void setSid(int sid) {
-        this.sid = sid;
-    }
+//    public int getSid() {
+//        return sid;
+//    }
+//
+//    public void setSid(int sid) {
+//        this.sid = sid;
+//    }
 }
