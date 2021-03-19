@@ -11,19 +11,126 @@
     <script src="../js/jquery-3.3.1.js"></script>
     <script src="../js/getParameter.js"></script>
     <script>
+        // route_list.html?cid=5
         $(function() {
-            // 1.获取url上的参数
+            // location
+            // 1.获取url上的cid=5, 参数5  ?cid=5
             var cid = getParameter("cid");
-            // console.log(cid);
-            // 2.根据cid查询对应的的线路列表
-            $.get("/route/findAll",
-                {cid: cid}, // 获取到url地址上的cid参数
-                function(pageInfo) {
-
-                },
-                "json"
-            ); // 查询列表, 通过JQ/JS代码来完成页面刷新
+            // 2.发送异步请求分页查询
+            load(cid);
         });
+        function load(cid, currentPage) {
+            $.get('/route/queryPage',
+                {cid: cid, currentPage: currentPage},
+                function(pb) {
+                    // pb就是pageBean对象的json格式
+                    // 1.将totalCount更新
+                    $("#totalCount").html(pb.total);
+                    // 2.将totalPage更新
+                    $("#totalPage").html(pb.pages);
+                    // 3.更新页码 - 首页-上一页-末页-下一页
+                    // 前5 后4
+                    var start = pb.pageNum - 5;
+                    var end = pb.pageNum + 4;
+                    // 前面不足5个, 后面补齐
+                    if (start < 1) {
+                        start = 1;
+                        end = start + 9;
+                    }
+                    // 后面不足4个, 前面补齐
+                    if (end > pb.pages) {
+                        end = pb.pages;
+                        start = end - 9;
+                    }
+                    // 总页数不足10个
+                    if (pb.pages < 10) {
+                        start = 1;
+                        end = pb.pages
+                    }
+
+                    /*
+                        <ul id="page">
+                            <li><a href="">首页</a></li>
+                            <li class="threeword"><a href="#">上一页</a></li>
+                            <li class="curPage"><a href="#">1</a></li>
+                            <li><a href="#">2</a></li>
+                            <li><a href="#">3</a></li>
+                            <li><a href="#">4</a></li>
+                            <li><a href="#">5</a></li>
+                            <li><a href="#">6</a></li>
+                            <li><a href="#">7</a></li>
+                            <li><a href="#">8</a></li>
+                            <li><a href="#">9</a></li>
+                            <li><a href="#">10</a></li>
+                            <li class="threeword"><a href="javascript:;">下一页</a></li>
+                            <li class="threeword"><a href="javascript:;">末页</a></li>
+                        </ul>
+                     */
+                    var lis = "";
+                    var firstPage = '<li><a href="javascript:load('+cid+','+pb.navigateFirstPage+')">首页</a></li>';
+
+                    var beforePage = '<li class="threeword"><a href="javascript:load('+cid+', '+pb.prePage+')">上一页</a></li>';
+                    lis += firstPage;
+                    lis += beforePage;
+                    for (var i = start; i <= end; i++) {
+                        var li;
+                        if (i == pb.pageNum) {
+                            li = '<li class="curPage" onclick="load('+cid+','+i+')"><a href="javascript:;">'+i+'</a></li>';
+                        } else {
+                            li = '<li onclick="load('+cid+','+i+')"><a href="javascript:;">'+i+'</a></li>';
+                        }
+                        lis += li;
+                    }
+                    var nextPage = '<li class="threeword"><a href="javascript:load('+cid+', '+pb.nextPage+');">下一页</a></li>';
+                    var lastPage = '<li><a href="javascript:load('+cid+','+pb.navigateLastPage+')">末页</a></li>';
+                    lis += nextPage;
+                    lis += lastPage;
+                    $("#page").html(lis);
+
+                    // 4.更新数据
+                    /*
+                      <ul id="list">
+                        <li>
+                            <div class="img"><img src="images/04-search_03.jpg" alt=""></div>
+                            <div class="text1">
+                                <p>【减100元 含除夕/春节出发】广州增城三英温泉度假酒店/自由行套票</p>
+                                <br/>
+                                <p>1-2月出发，网付立享￥1099/2人起！爆款位置有限，抢完即止！</p>
+                            </div>
+                            <div class="price">
+                                <p class="price_num">
+                                    <span>&yen;</span>
+                                    <span>299</span>
+                                    <span>起</span>
+                                </p>
+                                <p><a href="route_detail.html">查看详情</a></p>
+                            </div>
+                        </li>
+                     */
+                    var lisList = "";
+                    for (var i = 0; i < pb.list.length; i++) {
+                        var route = pb.list[i];
+                        var li = '<li>\n' +
+                            '                            <div class="img"><img src="/'+route.rimage+'" width="299px"></div>\n' +
+                            '                            <div class="text1">\n' +
+                            '                                <p>'+route.rname+'</p>\n' +
+                            '                                <br/>\n' +
+                            '                                <p>'+route.routeIntroduce+'</p>\n' +
+                            '                            </div>\n' +
+                            '                            <div class="price">\n' +
+                            '                                <p class="price_num">\n' +
+                            '                                    <span>&yen;</span>\n' +
+                            '                                    <span>'+route.price+'</span>\n' +
+                            '                                    <span>起</span>\n' +
+                            '                                </p>\n' +
+                            '                                <p><a href="route_detail.html?rid='+route.rid+'">查看详情</a></p>\n' +
+                            '                            </div>\n' +
+                            '                        </li>';
+                        lisList += li;
+                    }
+                    $("#list").html(lisList);
+                }, "json");
+        }
     </script>
 </head>
 <body>
@@ -41,7 +148,7 @@
                         <span>商品信息</span>
                         <span class="jg">价格</span>
                     </div>
-                    <ul>
+                    <ul id="list">
                         <li>
                             <div class="img"><img src="../images/04-search_03.jpg" alt=""></div>
                             <div class="text1">
@@ -173,10 +280,10 @@
                     </ul>
                     <div class="page_num_inf">
                         <i></i> 共
-                        <span>12</span>页<span>132</span>条
+                        <span id="totalPage">12</span>页<span id="totalCount">132</span>条
                     </div>
                     <div class="pageNum">
-                        <ul>
+                        <ul id="page">
                             <li><a href="">首页</a></li>
                             <li class="threeword"><a href="#">上一页</a></li>
                             <li><a href="#">1</a></li>
