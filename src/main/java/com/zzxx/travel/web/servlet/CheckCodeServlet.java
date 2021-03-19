@@ -1,11 +1,14 @@
 package com.zzxx.travel.web.servlet;
 
+import com.zzxx.travel.domain.ResultInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -74,7 +77,21 @@ public class CheckCodeServlet {
 		}
 		return sb.toString();
 	}
-
+	// 验证码校验
+	@RequestMapping("/checkCodeContent")
+	@ResponseBody
+	public ResultInfo checkCodeContent(String check_code, HttpSession session) {
+		// 获得session中保存的验证码
+		String checkcode_server = (String) session.getAttribute("CHECKCODE_SERVER");
+		ResultInfo info = new ResultInfo();
+		// 判断验证码
+		if (checkcode_server != null && checkcode_server.equalsIgnoreCase(check_code)) {
+			info.setFlag(true);
+		} else {
+			info.setFlag(false);
+		}
+		return info;
+	}
 }
 
 
